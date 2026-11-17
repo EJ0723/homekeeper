@@ -22,6 +22,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  chores        Chore[]
 
   @@unique([email])
   @@map("user")
@@ -73,4 +74,26 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+enum IntervalUnit {
+  day
+  week
+  month
+}
+
+model Chore {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title           String
+  intervalValue   Int
+  intervalUnit    IntervalUnit
+  lastCompletedAt DateTime?
+  nextDueAt       DateTime
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("chore")
 }
